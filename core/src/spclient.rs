@@ -72,7 +72,7 @@ pub enum RequestStrategy {
 
 impl Default for RequestStrategy {
     fn default() -> Self {
-        RequestStrategy::TryTimes(10)
+        RequestStrategy::TryTimes(2)
     }
 }
 
