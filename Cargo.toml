@@ -10,7 +10,7 @@ repository = "https://github.com/librespot-org/librespot"
 readme = "README.md"
 edition = "2021"
 
-[workspace]
+# [workspace]
 
 [lib]
 name = "librespot"
@@ -41,9 +41,10 @@ version = "0.5.0-dev"
 path = "metadata"
 version = "0.5.0-dev"
 
-[dependencies.librespot-playback]
-path = "playback"
-version = "0.5.0-dev"
+# [dependencies.librespot-playback]
+# path = "playback"
+# version = "0.5.0-dev"
+# optional = true
 
 [dependencies.librespot-protocol]
 path = "protocol"
@@ -63,20 +64,21 @@ tokio = { version = "1", features = ["rt", "macros", "signal", "sync", "parking_
 url = "2.2"
 
 [features]
-alsa-backend = ["librespot-playback/alsa-backend"]
-portaudio-backend = ["librespot-playback/portaudio-backend"]
-pulseaudio-backend = ["librespot-playback/pulseaudio-backend"]
-jackaudio-backend = ["librespot-playback/jackaudio-backend"]
-rodio-backend = ["librespot-playback/rodio-backend"]
-rodiojack-backend = ["librespot-playback/rodiojack-backend"]
-sdl-backend = ["librespot-playback/sdl-backend"]
-gstreamer-backend = ["librespot-playback/gstreamer-backend"]
+# alsa-backend = ["librespot-playback/alsa-backend"]
+# portaudio-backend = ["librespot-playback/portaudio-backend"]
+# pulseaudio-backend = ["librespot-playback/pulseaudio-backend"]
+# jackaudio-backend = ["librespot-playback/jackaudio-backend"]
+# rodio-backend = ["librespot-playback/rodio-backend"]
+# rodiojack-backend = ["librespot-playback/rodiojack-backend"]
+# sdl-backend = ["librespot-playback/sdl-backend"]
+# gstreamer-backend = ["librespot-playback/gstreamer-backend"]
 
 with-dns-sd = ["librespot-core/with-dns-sd", "librespot-discovery/with-dns-sd"]
 
-passthrough-decoder = ["librespot-playback/passthrough-decoder"]
+# passthrough-decoder = ["librespot-playback/passthrough-decoder"]
 
-default = ["rodio-backend"]
+# default = ["rodio-backend"]
+default = []
 
 [package.metadata.deb]
 maintainer = "librespot-org"

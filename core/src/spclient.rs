@@ -33,6 +33,7 @@ use crate::{
         connect::PutStateRequest,
         extended_metadata::BatchedEntityRequest,
     },
+    spotify_id::NamedSpotifyId,
     token::Token,
     version::spotify_version,
     Error, FileId, SpotifyId,
@@ -580,6 +581,12 @@ impl SpClient {
     }
 
     pub async fn get_playlist(&self, playlist_id: &SpotifyId) -> SpClientResult {
+        let endpoint = format!("/playlist/v2/playlist/{}", playlist_id.to_base62()?);
+
+        self.request(&Method::GET, &endpoint, None, None).await
+    }
+
+    pub async fn get_playlist_named(&self, playlist_id: &NamedSpotifyId) -> SpClientResult {
         let endpoint = format!("/playlist/v2/playlist/{}", playlist_id.to_base62()?);
 
         self.request(&Method::GET, &endpoint, None, None).await
