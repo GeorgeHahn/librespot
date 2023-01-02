@@ -1500,6 +1500,7 @@ dependencies = [
  "librespot-protocol",
  "log",
  "protobuf",
+ "serde",
  "thiserror",
  "uuid",
 ]

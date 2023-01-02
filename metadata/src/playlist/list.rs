@@ -20,6 +20,7 @@ use librespot_core::{
     spotify_id::{NamedSpotifyId, SpotifyId},
     Error, Session,
 };
+use protobuf::Message;
 
 use librespot_protocol as protocol;
 use protocol::playlist4_external::GeoblockBlockingType as Geoblock;
@@ -91,6 +92,31 @@ impl Playlist {
 
     pub fn name(&self) -> &str {
         &self.attributes.name
+    }
+
+    pub async fn get_named(session: &Session, id: &NamedSpotifyId) -> Result<Self, Error> {
+        let response = session.spclient().get_playlist_named(id).await?;
+        let msg = protocol::playlist4_external::SelectedListContent::parse_from_bytes(&response)?;
+        trace!("Received metadata: {:#?}", msg);
+        let playlist = SelectedListContent::try_from(&msg)?;
+
+        Ok(Self {
+            id: id.to_owned(),
+            revision: playlist.revision,
+            length: playlist.length,
+            attributes: playlist.attributes,
+            contents: playlist.contents,
+            diff: playlist.diff,
+            sync_result: playlist.sync_result,
+            resulting_revisions: playlist.resulting_revisions,
+            has_multiple_heads: playlist.has_multiple_heads,
+            is_up_to_date: playlist.is_up_to_date,
+            nonces: playlist.nonces,
+            timestamp: playlist.timestamp,
+            has_abuse_reporting: playlist.has_abuse_reporting,
+            capabilities: playlist.capabilities,
+            geoblocks: playlist.geoblocks,
+        })
     }
 }
 
