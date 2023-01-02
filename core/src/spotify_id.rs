@@ -1,5 +1,6 @@
 use std::{fmt, ops::Deref};
 
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::Error;
@@ -9,7 +10,7 @@ use librespot_protocol as protocol;
 // re-export FileId for historic reasons, when it was part of this mod
 pub use crate::FileId;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum SpotifyItemType {
     Album,
     Artist,
@@ -51,14 +52,16 @@ impl From<SpotifyItemType> for &str {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct SpotifyId {
     pub id: u128,
     pub item_type: SpotifyItemType,
 }
 
-#[derive(Debug, Error, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Error, Clone, PartialEq, Eq)]
 pub enum SpotifyIdError {
+    #[error("ID cannot be parsed: {0}")]
+    InvalidIdContext(String),
     #[error("ID cannot be parsed")]
     InvalidId,
     #[error("not a valid Spotify URI")]
@@ -136,7 +139,10 @@ impl SpotifyId {
                 b'0'..=b'9' => c - b'0',
                 b'a'..=b'z' => c - b'a' + 10,
                 b'A'..=b'Z' => c - b'A' + 36,
-                _ => return Err(SpotifyIdError::InvalidId.into()),
+                _ => {
+                    error!("unexpected tail");
+                    return Err(SpotifyIdError::InvalidIdContext(src.to_owned()).into());
+                }
             } as u128;
 
             dst = dst.checked_mul(62).ok_or(SpotifyIdError::InvalidId)?;
@@ -206,7 +212,9 @@ impl SpotifyId {
         }
 
         if id.len() != Self::SIZE_BASE62 {
-            return Err(SpotifyIdError::InvalidId.into());
+            // Often a local ID
+            warn!("ID has unexpected size {id}");
+            return Err(SpotifyIdError::InvalidIdContext(src.to_owned()).into());
         }
 
         Ok(Self {
@@ -313,7 +321,7 @@ impl fmt::Display for SpotifyId {
     }
 }
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct NamedSpotifyId {
     pub inner_id: SpotifyId,
     pub username: String,
@@ -373,13 +381,15 @@ impl Deref for NamedSpotifyId {
 
 impl fmt::Debug for NamedSpotifyId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_tuple("NamedSpotifyId")
+        f.debug_struct("NamedSpotifyId")
             .field(
+                "id",
                 &self
                     .inner_id
                     .to_uri()
                     .unwrap_or_else(|_| "invalid id".into()),
             )
+            .field("username", &self.username)
             .finish()
     }
 }
