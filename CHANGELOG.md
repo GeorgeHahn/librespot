@@ -60,6 +60,7 @@ https://github.com/librespot-org/librespot
 - [metadata] Most metadata is now retrieved with the `spclient` (breaking)
 - [metadata] Playlists are moved to the `playlist4_external` protobuf (breaking)
 - [metadata] Handle playlists that are sent with microsecond-based timestamps
+- [metadata] Playlists with invalid tracks will now load with invalid tracks filtered out
 - [playback] The audio decoder has been switched from `lewton` to `Symphonia`.
   This improves the Vorbis sound quality, adds support for MP3 as well as for
   FLAC in the future. (breaking)
