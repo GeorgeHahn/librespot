@@ -436,12 +436,12 @@ impl TryFrom<&Vec<u8>> for SpotifyId {
 impl TryFrom<&protocol::spirc::TrackRef> for SpotifyId {
     type Error = crate::Error;
     fn try_from(track: &protocol::spirc::TrackRef) -> Result<Self, Self::Error> {
-        match SpotifyId::from_raw(track.gid()) {
+        match SpotifyId::from_raw(track.get_gid()) {
             Ok(mut id) => {
                 id.item_type = SpotifyItemType::Track;
                 Ok(id)
             }
-            Err(_) => SpotifyId::from_uri(track.uri()),
+            Err(_) => SpotifyId::from_uri(track.get_uri()),
         }
     }
 }
@@ -451,7 +451,7 @@ impl TryFrom<&protocol::metadata::Album> for SpotifyId {
     fn try_from(album: &protocol::metadata::Album) -> Result<Self, Self::Error> {
         Ok(Self {
             item_type: SpotifyItemType::Album,
-            ..Self::from_raw(album.gid())?
+            ..Self::from_raw(album.get_gid())?
         })
     }
 }
@@ -461,7 +461,7 @@ impl TryFrom<&protocol::metadata::Artist> for SpotifyId {
     fn try_from(artist: &protocol::metadata::Artist) -> Result<Self, Self::Error> {
         Ok(Self {
             item_type: SpotifyItemType::Artist,
-            ..Self::from_raw(artist.gid())?
+            ..Self::from_raw(artist.get_gid())?
         })
     }
 }
@@ -471,7 +471,7 @@ impl TryFrom<&protocol::metadata::Episode> for SpotifyId {
     fn try_from(episode: &protocol::metadata::Episode) -> Result<Self, Self::Error> {
         Ok(Self {
             item_type: SpotifyItemType::Episode,
-            ..Self::from_raw(episode.gid())?
+            ..Self::from_raw(episode.get_gid())?
         })
     }
 }
@@ -481,7 +481,7 @@ impl TryFrom<&protocol::metadata::Track> for SpotifyId {
     fn try_from(track: &protocol::metadata::Track) -> Result<Self, Self::Error> {
         Ok(Self {
             item_type: SpotifyItemType::Track,
-            ..Self::from_raw(track.gid())?
+            ..Self::from_raw(track.get_gid())?
         })
     }
 }
@@ -491,7 +491,7 @@ impl TryFrom<&protocol::metadata::Show> for SpotifyId {
     fn try_from(show: &protocol::metadata::Show) -> Result<Self, Self::Error> {
         Ok(Self {
             item_type: SpotifyItemType::Show,
-            ..Self::from_raw(show.gid())?
+            ..Self::from_raw(show.get_gid())?
         })
     }
 }
@@ -501,7 +501,7 @@ impl TryFrom<&protocol::metadata::ArtistWithRole> for SpotifyId {
     fn try_from(artist: &protocol::metadata::ArtistWithRole) -> Result<Self, Self::Error> {
         Ok(Self {
             item_type: SpotifyItemType::Artist,
-            ..Self::from_raw(artist.artist_gid())?
+            ..Self::from_raw(artist.get_artist_gid())?
         })
     }
 }
@@ -511,7 +511,7 @@ impl TryFrom<&protocol::playlist4_external::Item> for SpotifyId {
     fn try_from(item: &protocol::playlist4_external::Item) -> Result<Self, Self::Error> {
         Ok(Self {
             item_type: SpotifyItemType::Track,
-            ..Self::from_uri(item.uri())?
+            ..Self::from_uri(item.get_uri())?
         })
     }
 }
@@ -521,7 +521,7 @@ impl TryFrom<&protocol::playlist4_external::Item> for SpotifyId {
 impl TryFrom<&protocol::playlist4_external::MetaItem> for SpotifyId {
     type Error = crate::Error;
     fn try_from(item: &protocol::playlist4_external::MetaItem) -> Result<Self, Self::Error> {
-        Self::try_from(item.revision())
+        Self::try_from(item.get_revision())
     }
 }
 
@@ -531,7 +531,7 @@ impl TryFrom<&protocol::playlist4_external::SelectedListContent> for SpotifyId {
     fn try_from(
         playlist: &protocol::playlist4_external::SelectedListContent,
     ) -> Result<Self, Self::Error> {
-        Self::try_from(playlist.revision())
+        Self::try_from(playlist.get_revision())
     }
 }
 
@@ -543,7 +543,7 @@ impl TryFrom<&protocol::playlist_annotate3::TranscodedPicture> for SpotifyId {
     fn try_from(
         picture: &protocol::playlist_annotate3::TranscodedPicture,
     ) -> Result<Self, Self::Error> {
-        Self::from_base62(picture.uri())
+        Self::from_base62(picture.get_uri())
     }
 }
 

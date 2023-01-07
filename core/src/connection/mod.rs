@@ -58,7 +58,7 @@ impl From<AuthenticationError> for Error {
 
 impl From<APLoginFailed> for AuthenticationError {
     fn from(login_failure: APLoginFailed) -> Self {
-        Self::LoginFailed(login_failure.error_code())
+        Self::LoginFailed(login_failure.get_error_code())
     }
 }
 
@@ -100,33 +100,25 @@ pub async fn authenticate(
 
     let mut packet = ClientResponseEncrypted::new();
     packet
-        .login_credentials
-        .mut_or_insert_default()
+        .mut_login_credentials()
         .set_username(credentials.username);
     packet
-        .login_credentials
-        .mut_or_insert_default()
+        .mut_login_credentials()
         .set_typ(credentials.auth_type);
     packet
-        .login_credentials
-        .mut_or_insert_default()
+        .mut_login_credentials()
         .set_auth_data(credentials.auth_data);
+    packet.mut_system_info().set_cpu_family(cpu_family);
+    packet.mut_system_info().set_os(os);
     packet
-        .system_info
-        .mut_or_insert_default()
-        .set_cpu_family(cpu_family);
-    packet.system_info.mut_or_insert_default().set_os(os);
-    packet
-        .system_info
-        .mut_or_insert_default()
+        .mut_system_info()
         .set_system_information_string(format!(
             "librespot-{}-{}",
             version::SHA_SHORT,
             version::BUILD_ID
         ));
     packet
-        .system_info
-        .mut_or_insert_default()
+        .mut_system_info()
         .set_device_id(device_id.to_string());
     packet.set_version_string(format!("librespot {}", version::SEMVER));
 
@@ -144,9 +136,9 @@ pub async fn authenticate(
             let welcome_data = APWelcome::parse_from_bytes(data.as_ref())?;
 
             let reusable_credentials = Credentials {
-                username: welcome_data.canonical_username().to_owned(),
-                auth_type: welcome_data.reusable_auth_credentials_type(),
-                auth_data: welcome_data.reusable_auth_credentials().to_owned(),
+                username: welcome_data.get_canonical_username().to_owned(),
+                auth_type: welcome_data.get_reusable_auth_credentials_type(),
+                auth_data: welcome_data.get_reusable_auth_credentials().to_owned(),
             };
 
             Ok(reusable_credentials)

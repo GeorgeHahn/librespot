@@ -5,7 +5,7 @@ use base64::engine::general_purpose::STANDARD as BASE64;
 use base64::engine::Engine as _;
 use byteorder::{BigEndian, ByteOrder};
 use pbkdf2::pbkdf2_hmac;
-use protobuf::Enum;
+use protobuf::ProtobufEnum;
 use serde::{Deserialize, Serialize};
 use sha1::{Digest, Sha1};
 use thiserror::Error;
@@ -146,7 +146,7 @@ impl Credentials {
 
 fn serialize_protobuf_enum<T, S>(v: &T, ser: S) -> Result<S::Ok, S::Error>
 where
-    T: Enum,
+    T: ProtobufEnum,
     S: serde::Serializer,
 {
     serde::Serialize::serialize(&v.value(), ser)
@@ -154,7 +154,7 @@ where
 
 fn deserialize_protobuf_enum<'de, T, D>(de: D) -> Result<T, D::Error>
 where
-    T: Enum,
+    T: ProtobufEnum,
     D: serde::Deserializer<'de>,
 {
     let v: i32 = serde::Deserialize::deserialize(de)?;

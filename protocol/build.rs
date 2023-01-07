@@ -46,8 +46,7 @@ fn compile() {
     let out_dir = out_dir();
     fs::create_dir(&out_dir).expect("create_dir");
 
-    protobuf_codegen::Codegen::new()
-        .pure()
+    protobuf_codegen_pure::Codegen::new()
         .out_dir(&out_dir)
         .inputs(&slices)
         .include(&proto_dir)
@@ -55,7 +54,26 @@ fn compile() {
         .expect("Codegen failed.");
 }
 
+fn generate_mod_rs() {
+    let out_dir = out_dir();
+
+    let mods = glob::glob(&out_dir.join("*.rs").to_string_lossy())
+        .expect("glob")
+        .filter_map(|p| {
+            p.ok()
+                .map(|p| format!("pub mod {};", p.file_stem().unwrap().to_string_lossy()))
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    let mod_rs = out_dir.join("mod.rs");
+    fs::write(&mod_rs, format!("// @generated\n{}\n", mods)).expect("write");
+
+    println!("cargo:rustc-env=PROTO_MOD_RS={}", mod_rs.to_string_lossy());
+}
+
 fn main() {
     cleanup();
     compile();
+    generate_mod_rs();
 }

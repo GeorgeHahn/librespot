@@ -12,7 +12,7 @@ use http::{
     status::InvalidStatusCode,
     uri::{InvalidUri, InvalidUriParts},
 };
-use protobuf::Error as ProtobufError;
+use protobuf::ProtobufError;
 use thiserror::Error;
 use tokio::sync::{
     mpsc::error::SendError, oneshot::error::RecvError, AcquireError, TryAcquireError,
