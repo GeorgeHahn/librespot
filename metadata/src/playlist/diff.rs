@@ -1,4 +1,7 @@
-use std::{convert::TryFrom, fmt::Debug};
+use std::{
+    convert::{TryFrom, TryInto},
+    fmt::Debug,
+};
 
 use super::operation::PlaylistOperations;
 
@@ -18,19 +21,9 @@ impl TryFrom<&DiffMessage> for PlaylistDiff {
     type Error = librespot_core::Error;
     fn try_from(diff: &DiffMessage) -> Result<Self, Self::Error> {
         Ok(Self {
-            from_revision: diff
-                .from_revision
-                .clone()
-                .unwrap_or_default()
-                .as_slice()
-                .try_into()?,
-            operations: diff.ops.as_slice().try_into()?,
-            to_revision: diff
-                .to_revision
-                .clone()
-                .unwrap_or_default()
-                .as_slice()
-                .try_into()?,
+            from_revision: diff.get_from_revision().try_into()?,
+            operations: diff.get_ops().try_into()?,
+            to_revision: diff.get_to_revision().try_into()?,
         })
     }
 }
