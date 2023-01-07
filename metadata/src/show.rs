@@ -14,7 +14,7 @@ use librespot_protocol as protocol;
 pub use protocol::metadata::Show_ConsumptionOrder as ShowConsumptionOrder;
 pub use protocol::metadata::Show_MediaType as ShowMediaType;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Show {
     pub id: SpotifyId,
     pub name: String,

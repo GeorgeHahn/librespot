@@ -4,7 +4,9 @@ use librespot_protocol as protocol;
 
 use crate::{spotify_id::to_base16, Error};
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(
+    Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Deserialize, serde::Serialize,
+)]
 pub struct FileId(pub [u8; 20]);
 
 impl FileId {

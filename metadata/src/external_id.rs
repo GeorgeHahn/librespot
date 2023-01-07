@@ -8,13 +8,13 @@ use crate::util::{impl_deref_wrapped, impl_from_repeated};
 use librespot_protocol as protocol;
 use protocol::metadata::ExternalId as ExternalIdMessage;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct ExternalId {
     pub external_type: String,
     pub id: String, // this can be anything from a URL to a ISRC, EAN or UPC
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct ExternalIds(pub Vec<ExternalId>);
 
 impl_deref_wrapped!(ExternalIds, Vec<ExternalId>);

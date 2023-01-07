@@ -21,7 +21,7 @@ use crate::{
 use librespot_core::{date::Date, Error, Session, SpotifyId};
 use librespot_protocol as protocol;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Track {
     pub id: SpotifyId,
     pub name: String,
@@ -50,7 +50,7 @@ pub struct Track {
     pub artists_with_role: ArtistsWithRole,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Tracks(pub Vec<SpotifyId>);
 
 impl_deref_wrapped!(Tracks, Vec<SpotifyId>);

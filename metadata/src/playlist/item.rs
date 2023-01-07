@@ -18,18 +18,18 @@ use protocol::playlist4_external::Item as PlaylistItemMessage;
 use protocol::playlist4_external::ListItems as PlaylistItemsMessage;
 use protocol::playlist4_external::MetaItem as PlaylistMetaItemMessage;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistItem {
     pub id: SpotifyId,
     pub attributes: PlaylistItemAttributes,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistItems(pub Vec<PlaylistItem>);
 
 impl_deref_wrapped!(PlaylistItems, Vec<PlaylistItem>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistItemList {
     pub position: i32,
     pub is_truncated: bool,
@@ -37,7 +37,7 @@ pub struct PlaylistItemList {
     pub meta_items: PlaylistMetaItems,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistMetaItem {
     pub revision: SpotifyId,
     pub attributes: PlaylistAttributes,
@@ -48,7 +48,7 @@ pub struct PlaylistMetaItem {
     pub capabilities: Capabilities,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistMetaItems(pub Vec<PlaylistMetaItem>);
 
 impl_deref_wrapped!(PlaylistMetaItems, Vec<PlaylistMetaItem>);
