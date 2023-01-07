@@ -12,6 +12,7 @@ edition = "2021"
 [dependencies.librespot-protocol]
 path = "../protocol"
 version = "0.5.0-dev"
+features = ["with-serde"]
 
 [dependencies]
 aes = "0.8"
@@ -21,14 +22,24 @@ bytes = "1"
 dns-sd = { version = "0.1", optional = true }
 form_urlencoded = "1.0"
 futures-core = "0.3"
-futures-util = { version = "0.3", features = ["alloc", "bilock", "sink", "unstable"] }
-governor = { version = "0.4", default-features = false, features = ["std", "jitter"] }
+futures-util = { version = "0.3", features = [
+    "alloc",
+    "bilock",
+    "sink",
+    "unstable",
+] }
+governor = { version = "0.4", default-features = false, features = [
+    "std",
+    "jitter",
+] }
 hex = "0.4"
 hmac = "0.12"
 httparse = "1.7"
 http = "0.2"
 hyper = { version = "0.14", features = ["client", "http1", "http2", "tcp"] }
-hyper-proxy = { version = "0.9", default-features = false, features = ["rustls"] }
+hyper-proxy = { version = "0.9", default-features = false, features = [
+    "rustls",
+] }
 hyper-rustls = { version = "0.23", features = ["http2"] }
 log = "0.4"
 nonzero_ext = "0.3"
@@ -41,7 +52,7 @@ once_cell = "1"
 parking_lot = { version = "0.12", features = ["deadlock_detection"] }
 pbkdf2 = { version = "0.11", default-features = false, features = ["hmac"] }
 priority-queue = "1.2"
-protobuf = "2"
+protobuf = { version = "2", features = ["with-serde"] }
 quick-xml = { version = "0.23", features = ["serialize"] }
 rand = "0.8"
 rsa = "0.6"
@@ -51,17 +62,34 @@ sha1 = "0.10"
 shannon = "0.2"
 sysinfo = { version = "0.25", default-features = false }
 thiserror = "1.0"
-time = { version = "0.3", features = ["formatting", "parsing"] }
-tokio = { version = "1", features = ["io-util", "macros", "net", "parking_lot", "rt", "sync", "time"] }
+time = { version = "0.3", features = ["formatting", "parsing", "serde"] }
+tokio = { version = "1", features = [
+    "io-util",
+    "macros",
+    "net",
+    "parking_lot",
+    "rt",
+    "sync",
+    "time",
+] }
 tokio-stream = "0.1"
-tokio-tungstenite = { version = "*", default-features = false, features = ["rustls-tls-native-roots"] }
+tokio-tungstenite = { version = "*", default-features = false, features = [
+    "rustls-tls-native-roots",
+] }
 tokio-util = { version = "0.7", features = ["codec"] }
 url = "2"
-uuid = { version = "1", default-features = false, features = ["fast-rng", "v4"] }
+uuid = { version = "1", default-features = false, features = [
+    "fast-rng",
+    "v4",
+    "serde",
+] }
 
 [build-dependencies]
 rand = "0.8"
-vergen = { version = "7", default-features = false, features = ["build", "git"] }
+vergen = { version = "7", default-features = false, features = [
+    "build",
+    "git",
+] }
 
 [dev-dependencies]
 env_logger = "0.9"

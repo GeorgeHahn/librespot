@@ -9,7 +9,7 @@ use librespot_protocol as protocol;
 use protocol::playlist_permission::Capabilities as CapabilitiesMessage;
 use protocol::playlist_permission::PermissionLevel;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Capabilities {
     pub can_view: bool,
     pub can_administrate_permissions: bool,
@@ -19,7 +19,7 @@ pub struct Capabilities {
     pub can_cancel_membership: bool,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct PermissionLevels(pub Vec<PermissionLevel>);
 
 impl_deref_wrapped!(PermissionLevels, Vec<PermissionLevel>);

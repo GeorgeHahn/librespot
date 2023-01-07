@@ -19,7 +19,7 @@ use librespot_core::{
 
 pub type AudioItemResult = Result<AudioItem, Error>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct CoverImage {
     pub url: String,
     pub size: ImageSize,
@@ -27,7 +27,7 @@ pub struct CoverImage {
     pub height: i32,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct AudioItem {
     pub track_id: SpotifyId,
     pub uri: String,
@@ -42,7 +42,7 @@ pub struct AudioItem {
     pub unique_fields: UniqueFields,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum UniqueFields {
     Track {
         artists: ArtistsWithRole,

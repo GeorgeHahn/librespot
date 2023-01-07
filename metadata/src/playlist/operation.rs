@@ -19,7 +19,7 @@ use protocol::playlist4_external::Op as PlaylistOperationMessage;
 pub use protocol::playlist4_external::Op_Kind as PlaylistOperationKind;
 use protocol::playlist4_external::Rem as PlaylistRemoveMessage;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistOperation {
     pub kind: PlaylistOperationKind,
     pub add: PlaylistOperationAdd,
@@ -29,12 +29,12 @@ pub struct PlaylistOperation {
     pub update_list_attributes: PlaylistUpdateAttributes,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistOperations(pub Vec<PlaylistOperation>);
 
 impl_deref_wrapped!(PlaylistOperations, Vec<PlaylistOperation>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistOperationAdd {
     pub from_index: i32,
     pub items: PlaylistItems,
@@ -42,14 +42,14 @@ pub struct PlaylistOperationAdd {
     pub add_first: bool,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistOperationMove {
     pub from_index: i32,
     pub length: i32,
     pub to_index: i32,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistOperationRemove {
     pub from_index: i32,
     pub length: i32,

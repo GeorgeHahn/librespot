@@ -21,7 +21,7 @@ use librespot_core::{date::Date, Error, Session, SpotifyId};
 use librespot_protocol as protocol;
 pub use protocol::metadata::Episode_EpisodeType as EpisodeType;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Episode {
     pub id: SpotifyId,
     pub name: String,
@@ -49,7 +49,7 @@ pub struct Episode {
     pub is_audiobook_chapter: bool,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Episodes(pub Vec<SpotifyId>);
 
 impl_deref_wrapped!(Episodes, Vec<SpotifyId>);

@@ -12,7 +12,7 @@ use librespot_core::{spotify_id::NamedSpotifyId, Error, Session};
 use librespot_protocol as protocol;
 pub use protocol::playlist_annotate3::AbuseReportState;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct RootPlaylist {
     pub items: Vec<Item>,
 }
@@ -35,7 +35,7 @@ impl LockedItem {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum Item {
     Playlist(NamedSpotifyId),
     Group(String, Vec<Item>),

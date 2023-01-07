@@ -28,7 +28,7 @@ use protocol::metadata::ArtistWithRole as ArtistWithRoleMessage;
 use protocol::metadata::Biography as BiographyMessage;
 use protocol::metadata::TopTracks as TopTracksMessage;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Artist {
     pub id: SpotifyId,
     pub name: String,
@@ -51,35 +51,35 @@ pub struct Artist {
     pub availabilities: Availabilities,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Artists(pub Vec<Artist>);
 
 impl_deref_wrapped!(Artists, Vec<Artist>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct ArtistWithRole {
     pub id: SpotifyId,
     pub name: String,
     pub role: ArtistRole,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct ArtistsWithRole(pub Vec<ArtistWithRole>);
 
 impl_deref_wrapped!(ArtistsWithRole, Vec<ArtistWithRole>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct TopTracks {
     pub country: String,
     pub tracks: Tracks,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct CountryTopTracks(pub Vec<TopTracks>);
 
 impl_deref_wrapped!(CountryTopTracks, Vec<TopTracks>);
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct AlbumGroup(pub Albums);
 
 impl_deref_wrapped!(AlbumGroup, Albums);
@@ -93,24 +93,24 @@ impl_deref_wrapped!(AlbumGroup, Albums);
 /// ```
 /// In most cases only the current variant of each album is needed. A list of every album in it's
 /// current release variant can be obtained by using [`AlbumGroups::current_releases`]
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct AlbumGroups(pub Vec<AlbumGroup>);
 
 impl_deref_wrapped!(AlbumGroups, Vec<AlbumGroup>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Biography {
     pub text: String,
     pub portraits: Images,
     pub portrait_group: Vec<Images>,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Biographies(pub Vec<Biography>);
 
 impl_deref_wrapped!(Biographies, Vec<Biography>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum ActivityPeriod {
     Timespan {
         start_year: u16,
@@ -119,7 +119,7 @@ pub enum ActivityPeriod {
     Decade(u16),
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct ActivityPeriods(pub Vec<ActivityPeriod>);
 
 impl_deref_wrapped!(ActivityPeriods, Vec<ActivityPeriod>);
