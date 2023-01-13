@@ -153,6 +153,27 @@ impl SpotifyId {
         })
     }
 
+    pub fn from_base62_ex(src: &str, item_type: SpotifyItemType) -> SpotifyIdResult {
+        let mut dst: u128 = 0;
+
+        for c in src.as_bytes() {
+            let p = match c {
+                b'0'..=b'9' => c - b'0',
+                b'a'..=b'z' => c - b'a' + 10,
+                b'A'..=b'Z' => c - b'A' + 36,
+                _ => {
+                    error!("unexpected tail");
+                    return Err(SpotifyIdError::InvalidIdContext(src.to_owned()).into());
+                }
+            } as u128;
+
+            dst *= 62;
+            dst += p;
+        }
+
+        Ok(Self { id: dst, item_type })
+    }
+
     /// Creates a `u128` from a copy of `SpotifyId::SIZE` (16) bytes in big-endian order.
     ///
     /// The resulting `SpotifyId` will default to a `SpotifyItemType::Unknown`.
