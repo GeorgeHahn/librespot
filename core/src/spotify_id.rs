@@ -256,7 +256,7 @@ impl SpotifyId {
     ///
     /// [canonically]: https://developer.spotify.com/documentation/web-api/concepts/spotify-uris-ids
     #[allow(clippy::wrong_self_convention)]
-    pub fn to_base62(&self) -> Result<String, Error> {
+    pub fn to_base62(&self) -> Result<String, SpotifyIdError> {
         let mut dst = [0u8; 22];
         let mut i = 0;
         let n = self.id;
@@ -294,7 +294,7 @@ impl SpotifyId {
 
         dst.reverse();
 
-        String::from_utf8(dst.to_vec()).map_err(|_| SpotifyIdError::InvalidId.into())
+        String::from_utf8(dst.to_vec()).map_err(|_| SpotifyIdError::InvalidId)
     }
 
     /// Returns a copy of the `SpotifyId` as an array of `SpotifyId::SIZE` (16) bytes in
