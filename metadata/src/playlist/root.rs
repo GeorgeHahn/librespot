@@ -52,7 +52,7 @@ impl RootPlaylist {
         let current_user = session.username();
         let response = Self::request_for_user(session, &current_user).await?;
         let msg = protocol::playlist4_external::SelectedListContent::parse_from_bytes(&response)?;
-        // trace!("Received root playlist: {:#?}", msg);
+        trace!("Received root playlist: {:#?}", msg);
 
         let hier: Arc<Mutex<Vec<LockedItem>>> = Default::default();
         let mut stack: Vec<Arc<Mutex<Vec<LockedItem>>>> = vec![hier.clone()];
