@@ -60,7 +60,14 @@ rpassword = "7.0"
 sha1 = "0.10"
 sysinfo = { version = "0.30.5", default-features = false }
 thiserror = "1.0"
-tokio = { version = "1", features = ["rt", "macros", "signal", "sync", "parking_lot", "process"] }
+tokio = { version = "1", features = [
+    "rt",
+    "macros",
+    "signal",
+    "sync",
+    "parking_lot",
+    "process",
+] }
 url = "2.2"
 webpki = "0.22.4"
 
@@ -94,7 +101,19 @@ available in the official library."""
 section = "sound"
 priority = "optional"
 assets = [
-    ["target/release/librespot", "usr/bin/", "755"],
-    ["contrib/librespot.service", "lib/systemd/system/", "644"],
-    ["contrib/librespot.user.service", "lib/systemd/user/", "644"]
+    [
+        "target/release/librespot",
+        "usr/bin/",
+        "755",
+    ],
+    [
+        "contrib/librespot.service",
+        "lib/systemd/system/",
+        "644",
+    ],
+    [
+        "contrib/librespot.user.service",
+        "lib/systemd/user/",
+        "644",
+    ],
 ]
