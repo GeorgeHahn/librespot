@@ -4,14 +4,21 @@ use librespot_protocol as protocol;
 
 use crate::{spotify_id::to_base16, Error};
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(
+    Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Deserialize, serde::Serialize,
+)]
 pub struct FileId(pub [u8; 20]);
 
 impl FileId {
     pub fn from_raw(src: &[u8]) -> FileId {
+        assert!(src.len() == 20, "Unexpected FileId length: {}", src.len());
         let mut dst = [0u8; 20];
         dst.clone_from_slice(src);
         FileId(dst)
+    }
+
+    pub fn to_raw(&self) -> &[u8; 20] {
+        &self.0
     }
 
     #[allow(clippy::wrong_self_convention)]
