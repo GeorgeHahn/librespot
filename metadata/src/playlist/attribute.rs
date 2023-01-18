@@ -10,7 +10,7 @@ use crate::{
     util::{impl_deref_wrapped, impl_from_repeated_copy},
 };
 
-use librespot_core::date::Date;
+use librespot_core::{date::Date, FileId};
 
 use librespot_protocol as protocol;
 use protocol::playlist4_external::FormatListAttribute as PlaylistFormatAttributeMessage;
@@ -27,7 +27,7 @@ use protocol::playlist4_external::UpdateListAttributes as PlaylistUpdateAttribut
 pub struct PlaylistAttributes {
     pub name: String,
     pub description: String,
-    pub picture: Vec<u8>,
+    pub picture: FileId,
     pub is_collaborative: bool,
     pub pl3_version: String,
     pub is_deleted_by_owner: bool,
@@ -101,7 +101,7 @@ impl TryFrom<&PlaylistAttributesMessage> for PlaylistAttributes {
         Ok(Self {
             name: attributes.get_name().to_owned(),
             description: attributes.get_description().to_owned(),
-            picture: attributes.get_picture().to_owned(),
+            picture: FileId::from_raw(attributes.get_picture()),
             is_collaborative: attributes.get_collaborative(),
             pl3_version: attributes.get_pl3_version().to_owned(),
             is_deleted_by_owner: attributes.get_deleted_by_owner(),
