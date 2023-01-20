@@ -22,12 +22,14 @@ use protocol::playlist4_external::ListAttributes as PlaylistAttributesMessage;
 use protocol::playlist4_external::ListAttributesPartialState as PlaylistPartialAttributesMessage;
 use protocol::playlist4_external::UpdateItemAttributes as PlaylistUpdateItemAttributesMessage;
 use protocol::playlist4_external::UpdateListAttributes as PlaylistUpdateAttributesMessage;
+use serde::{Deserialize, Deserializer};
 
 #[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistAttributes {
     pub name: String,
     pub description: String,
-    pub picture: FileId,
+    #[serde(deserialize_with = "file_or_none")]
+    pub picture: Option<FileId>,
     pub is_collaborative: bool,
     pub pl3_version: String,
     pub is_deleted_by_owner: bool,
@@ -35,6 +37,13 @@ pub struct PlaylistAttributes {
     pub format: String,
     pub format_attributes: PlaylistFormatAttribute,
     pub picture_sizes: PictureSizes,
+}
+
+fn file_or_none<'de, D>(deserializer: D) -> Result<Option<FileId>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Ok(Deserialize::deserialize(deserializer).ok())
 }
 
 #[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
@@ -98,10 +107,17 @@ pub struct PlaylistUpdateItemAttributes {
 impl TryFrom<&PlaylistAttributesMessage> for PlaylistAttributes {
     type Error = librespot_core::Error;
     fn try_from(attributes: &PlaylistAttributesMessage) -> Result<Self, Self::Error> {
+        let picture = attributes.get_picture();
+        let picture = if picture.len() == 0 {
+            None
+        } else {
+            Some(FileId::from_raw(picture))
+        };
+
         Ok(Self {
             name: attributes.get_name().to_owned(),
             description: attributes.get_description().to_owned(),
-            picture: FileId::from_raw(attributes.get_picture()),
+            picture,
             is_collaborative: attributes.get_collaborative(),
             pl3_version: attributes.get_pl3_version().to_owned(),
             is_deleted_by_owner: attributes.get_deleted_by_owner(),
