@@ -11,7 +11,7 @@ pub struct FileId(pub [u8; 20]);
 
 impl FileId {
     pub fn from_raw(src: &[u8]) -> FileId {
-        assert!(src.len() == 20, "Unexpected FileId length: {}", src.len());
+        debug_assert!(src.len() == 20, "Unexpected FileId length: {}", src.len());
         let mut dst = [0u8; 20];
         dst.clone_from_slice(src);
         FileId(dst)

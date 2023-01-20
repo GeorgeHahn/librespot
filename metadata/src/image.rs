@@ -40,7 +40,6 @@ pub struct PictureSize {
     pub url: String,
 }
 
-#[derive(Debug, Clone, Default)]
 pub struct PictureSizes(pub Vec<PictureSize>);
 
 impl_deref_wrapped!(PictureSizes, Vec<PictureSize>);
