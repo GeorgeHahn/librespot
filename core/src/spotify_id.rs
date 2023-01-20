@@ -292,7 +292,7 @@ impl SpotifyId {
 
         dst.reverse();
 
-        String::from_utf8(dst.to_vec()).map_err(|_| SpotifyIdError::InvalidId)
+        Ok(unsafe { String::from_utf8_unchecked(dst.to_vec()) })
     }
 
     /// Returns a copy of the `SpotifyId` as an array of `SpotifyId::SIZE` (16) bytes in
