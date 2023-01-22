@@ -203,7 +203,7 @@ impl Session {
             let result = future::try_join3(sender_task, receiver_task, timeout_task).await;
 
             if let Err(e) = result {
-                error!("{}", e);
+                error!("connect task failed: {}", e);
             }
         });
 
