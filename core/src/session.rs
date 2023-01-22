@@ -186,7 +186,7 @@ impl Session {
             let result = future::try_join(sender_task, receiver_task).await;
 
             if let Err(e) = result {
-                error!("{}", e);
+                error!("connect task failed: {}", e);
             }
         });
 
