@@ -279,8 +279,20 @@ impl MercuryManager {
 
             if !found {
                 debug!("unknown subscription uri={}", &response.uri);
-                trace!("response pushed over Mercury: {:?}", response);
-                Err(MercuryError::Response(response).into())
+                // this can be pasted into https://protogen.marcgravell.com/decode
+                trace!(
+                    "Dropping Mercury request. [{}] {}:\n{}",
+                    response.status_code,
+                    response.uri,
+                    response
+                        .payload
+                        .iter()
+                        .map(|p| base64::encode(&p))
+                        .collect::<Vec<String>>()
+                        .join("\n")
+                );
+                // Err(MercuryError::Response(response).into())
+                Ok(())
             } else {
                 Ok(())
             }
