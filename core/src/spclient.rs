@@ -468,7 +468,11 @@ impl SpClient {
                 .session()
                 .token_provider()
                 .get_token("playlist-read")
-                .await?;
+                .await
+                .map_err(|e| {
+                    warn!("failed to get token: {e}");
+                    e
+                })?;
 
             let headers_mut = request.headers_mut();
             if let Some(ref hdrs) = headers {
