@@ -135,61 +135,96 @@ impl Session {
         credentials: Credentials,
         store_credentials: bool,
     ) -> Result<(), Error> {
-        let (reusable_credentials, transport) = loop {
-            let ap = self.apresolver().resolve("accesspoint").await?;
-            info!("Connecting to AP \"{}:{}\"", ap.0, ap.1);
-            let mut transport =
-                connection::connect(&ap.0, ap.1, self.config().proxy.as_ref()).await?;
-
-            match connection::authenticate(
-                &mut transport,
-                credentials.clone(),
-                &self.config().device_id,
-            )
-            .await
-            {
-                Ok(creds) => break (creds, transport),
-                Err(e) => {
-                    if let Some(AuthenticationError::LoginFailed(ErrorCode::TryAnotherAP)) =
-                        e.error.downcast_ref::<AuthenticationError>()
-                    {
-                        warn!("Instructed to try another access point...");
-                        continue;
-                    } else {
-                        return Err(e);
-                    }
-                }
-            }
-        };
-
-        info!("Authenticated as \"{}\" !", reusable_credentials.username);
-        self.set_username(&reusable_credentials.username);
-        if let Some(cache) = self.cache() {
-            if store_credentials {
-                cache.save_credentials(&reusable_credentials);
-            }
-        }
-
-        let (tx_connection, rx_connection) = mpsc::unbounded_channel();
-        self.0
-            .tx_connection
-            .set(tx_connection)
-            .map_err(|_| SessionError::NotConnected)?;
-
-        let (sink, stream) = transport.split();
-        let sender_task = UnboundedReceiverStream::new(rx_connection)
-            .map(Ok)
-            .forward(sink);
-        let receiver_task = DispatchTask(stream, self.weak());
+        let that = self.clone();
+        let (tx, mut rx) = tokio::sync::mpsc::channel(1);
 
         tokio::spawn(async move {
-            let result = future::try_join(sender_task, receiver_task).await;
+            loop {
+                info!("Connecting");
+                let tx = tx.clone();
+                let (reusable_credentials, transport) = loop {
+                    let tx = tx.clone();
+                    let res = that.apresolver().resolve("accesspoint").await;
+                    let ap = match res {
+                        Ok(ap) => ap,
+                        Err(e) => {
+                            warn!("failed to resolve AP: {e}");
+                            let _ = tx.send(Err(e));
+                            return;
+                        }
+                    };
+                    info!("Connecting to AP \"{}:{}\"", ap.0, ap.1);
+                    let res = connection::connect(&ap.0, ap.1, that.config().proxy.as_ref()).await;
+                    let mut transport = match res {
+                        Ok(val) => val,
+                        Err(e) => {
+                            warn!("failed to connect to AP: {e}");
+                            let _ = tx.send(Err(e.into()));
+                            return;
+                        }
+                    };
 
-            if let Err(e) = result {
-                error!("connect task failed: {}", e);
+                    match connection::authenticate(
+                        &mut transport,
+                        credentials.clone(),
+                        &that.config().device_id,
+                    )
+                    .await
+                    {
+                        Ok(creds) => break (creds, transport),
+                        Err(e) => {
+                            if let Some(AuthenticationError::LoginFailed(ErrorCode::TryAnotherAP)) =
+                                e.error.downcast_ref::<AuthenticationError>()
+                            {
+                                warn!("Instructed to try another access point...");
+                                continue;
+                            } else {
+                                warn!("failed to authenticate: {e}");
+                                let _ = tx.send(Err(e));
+                            }
+                        }
+                    }
+                };
+
+                info!("Authenticated as \"{}\" !", reusable_credentials.username);
+                that.set_username(&reusable_credentials.username);
+                if let Some(cache) = that.cache() {
+                    if store_credentials {
+                        cache.save_credentials(&reusable_credentials);
+                    }
+                }
+
+                let (tx_connection, rx_connection) = mpsc::unbounded_channel();
+                let res = that
+                    .0
+                    .tx_connection
+                    .set(tx_connection)
+                    .map_err(|_| SessionError::NotConnected);
+                if let Err(e) = res {
+                    warn!("session not connected");
+                    let _ = tx.send(Err(e.into()));
+                }
+
+                let (sink, stream) = transport.split();
+                let sender_task = UnboundedReceiverStream::new(rx_connection)
+                    .map(Ok)
+                    .forward(sink);
+                let receiver_task = DispatchTask(stream, that.weak());
+
+                let _ = tx.send(Ok(())).await;
+
+                let result = future::try_join(sender_task, receiver_task).await;
+
+                if let Err(e) = result {
+                    error!("connect task failed: {}", e);
+                }
             }
         });
 
+        if let Some(res) = rx.recv().await {
+            info!("connect returned {:?}", res);
+            res?;
+        }
         Ok(())
     }
 
