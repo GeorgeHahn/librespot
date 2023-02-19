@@ -4,6 +4,7 @@ use std::{
 };
 
 use protobuf::Message;
+use protocol::playlist4_external::SelectedListContent;
 
 use crate::request::{MercuryRequest, RequestResult};
 
@@ -15,11 +16,12 @@ pub use protocol::playlist_annotate3::AbuseReportState;
 #[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct RootPlaylist {
     pub items: Vec<Item>,
+    pub spotify: SelectedListContent,
 }
 
 #[derive(Debug, Clone)]
 enum LockedItem {
-    Playlist(NamedSpotifyId),
+    Playlist(RootPlaylistEntry),
     Group(String, Arc<Mutex<Vec<LockedItem>>>),
 }
 
@@ -36,8 +38,14 @@ impl LockedItem {
 }
 
 #[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
+pub struct RootPlaylistEntry {
+    id: NamedSpotifyId,
+    timestamp: i64,
+}
+
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum Item {
-    Playlist(NamedSpotifyId),
+    Playlist(RootPlaylistEntry),
     Group(String, Vec<Item>),
 }
 
@@ -89,14 +97,20 @@ impl RootPlaylist {
                 .unwrap()
                 .lock()
                 .unwrap()
-                .push(LockedItem::Playlist(NamedSpotifyId::from_uri(uri)?));
+                .push(LockedItem::Playlist(RootPlaylistEntry {
+                    id: NamedSpotifyId::from_uri(uri)?,
+                    timestamp: list.get_attributes().get_timestamp(),
+                }));
         }
 
         let hier: Vec<_> = hier.lock().unwrap().iter().map(|i| i.dock()).collect();
 
         trace!("hier: {:#?}", hier);
 
-        Ok(Self { items: hier })
+        Ok(Self {
+            items: hier,
+            spotify: msg,
+        })
     }
 }
 
