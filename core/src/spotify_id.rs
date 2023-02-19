@@ -130,6 +130,8 @@ impl SpotifyId {
     ///
     /// [Spotify ID]: https://developer.spotify.com/documentation/web-api/#spotify-uris-and-ids
     pub fn from_base62(src: &str) -> SpotifyIdResult {
+        assert!(src.len() == 22);
+
         let mut dst: u128 = 0;
 
         for c in src.as_bytes() {
@@ -154,6 +156,8 @@ impl SpotifyId {
     }
 
     pub fn from_base62_ex(src: &str, item_type: SpotifyItemType) -> SpotifyIdResult {
+        assert!(src.len() == 22);
+
         let mut dst: u128 = 0;
 
         for c in src.as_bytes() {
