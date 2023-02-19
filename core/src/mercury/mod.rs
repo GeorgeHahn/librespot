@@ -72,7 +72,7 @@ impl MercuryManager {
         let cmd = req.method.command();
         let data = req.encode(&seq)?;
 
-        self.session().send_packet(cmd, data)?;
+        self.session().send_packet(cmd, data)?; // note: this can return SendError channel closed - presumably we need a new session when that happens
         Ok(MercuryFuture { receiver: rx })
     }
 
