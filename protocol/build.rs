@@ -50,6 +50,10 @@ fn compile() {
         .out_dir(&out_dir)
         .inputs(&slices)
         .include(&proto_dir)
+        .customize(protobuf_codegen_pure::Customize {
+            serde_derive: Some(true),
+            ..Default::default()
+        })
         .run()
         .expect("Codegen failed.");
 }
