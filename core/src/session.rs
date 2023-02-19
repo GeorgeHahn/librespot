@@ -15,7 +15,7 @@ use futures_core::TryStream;
 use futures_util::{future, ready, StreamExt, TryStreamExt};
 use num_traits::FromPrimitive;
 use once_cell::sync::OnceCell;
-use parking_lot::RwLock;
+use parking_lot::RwLock; // todo: switch to async rwlock
 use quick_xml::events::Event;
 use thiserror::Error;
 use tokio::sync::mpsc;
@@ -87,7 +87,7 @@ struct SessionInternal {
     data: RwLock<SessionData>,
 
     http_client: HttpClient,
-    tx_connection: OnceCell<mpsc::UnboundedSender<(u8, Vec<u8>)>>,
+    tx_connection: RwLock<Option<mpsc::UnboundedSender<(u8, Vec<u8>)>>>,
 
     apresolver: OnceCell<ApResolver>,
     audio_key: OnceCell<AudioKeyManager>,
@@ -118,7 +118,7 @@ impl Session {
             config,
             data: RwLock::new(session_data),
             http_client,
-            tx_connection: OnceCell::new(),
+            tx_connection: RwLock::new(None),
             cache: cache.map(Arc::new),
             apresolver: OnceCell::new(),
             audio_key: OnceCell::new(),
@@ -195,14 +195,9 @@ impl Session {
                 }
 
                 let (tx_connection, rx_connection) = mpsc::unbounded_channel();
-                let res = that
-                    .0
-                    .tx_connection
-                    .set(tx_connection)
-                    .map_err(|_| SessionError::NotConnected);
-                if let Err(e) = res {
-                    warn!("session not connected");
-                    let _ = tx.send(Err(e.into()));
+                {
+                    let mut session_tx_connection = that.0.tx_connection.write();
+                    *session_tx_connection = Some(tx_connection);
                 }
 
                 let (sink, stream) = transport.split();
@@ -388,7 +383,7 @@ impl Session {
     }
 
     pub fn send_packet(&self, cmd: PacketType, data: Vec<u8>) -> Result<(), Error> {
-        match self.0.tx_connection.get() {
+        match self.0.tx_connection.read().as_ref() {
             Some(tx) => Ok(tx.send((cmd as u8, data))?),
             None => Err(SessionError::NotConnected.into()),
         }
