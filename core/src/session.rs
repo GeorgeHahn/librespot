@@ -13,6 +13,7 @@ use byteorder::{BigEndian, ByteOrder};
 use bytes::Bytes;
 use futures_core::TryStream;
 use futures_util::{future, ready, StreamExt, TryStreamExt};
+use metrics::counter;
 use num_traits::FromPrimitive;
 use once_cell::sync::OnceCell;
 use parking_lot::RwLock; // todo: switch to async rwlock
@@ -141,6 +142,7 @@ impl Session {
         tokio::spawn(async move {
             loop {
                 info!("Connecting");
+                counter!("librespot.session.connect", 1);
                 let tx = tx.clone();
                 let (reusable_credentials, transport) = loop {
                     let tx = tx.clone();
@@ -209,6 +211,7 @@ impl Session {
                 let _ = tx.send(Ok(())).await;
 
                 let result = future::try_join(sender_task, receiver_task).await;
+                counter!("librespot.session.reconnect", 1);
 
                 if let Err(e) = result {
                     error!("connect task failed: {}", e);

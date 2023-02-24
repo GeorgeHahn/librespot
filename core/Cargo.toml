@@ -42,6 +42,7 @@ hyper-proxy = { version = "0.9", default-features = false, features = [
 ] }
 hyper-rustls = { version = "0.23", features = ["http2"] }
 log = "0.4"
+metrics = "0.20.1"
 nonzero_ext = "0.3"
 num = "0.4"
 num-bigint = { version = "0.4", features = ["rand"] }
