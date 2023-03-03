@@ -19,6 +19,7 @@ use rand::RngCore;
 use sha1::{Digest, Sha1};
 use sysinfo::{System, SystemExt};
 use thiserror::Error;
+use metrics::counter;
 
 use crate::{
     apresolve::SocketAddress,
@@ -467,8 +468,10 @@ impl SpClient {
                 .await
                 .map_err(|e| {
                     warn!("failed to get token: {e}");
+                    counter!("librespot.session.get_token.error", 1);
                     e
                 })?;
+            counter!("librespot.session.get_token.success", 1);
 
             let headers_mut = request.headers_mut();
             if let Some(ref hdrs) = headers {
