@@ -215,6 +215,7 @@ impl Session {
 
                 if let Err(e) = result {
                     error!("connect task failed: {}", e);
+                    panic!("connection closed");
                 }
             }
         });
