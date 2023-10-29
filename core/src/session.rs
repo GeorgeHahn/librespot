@@ -13,6 +13,7 @@ use byteorder::{BigEndian, ByteOrder};
 use bytes::Bytes;
 use futures_core::TryStream;
 use futures_util::{future, ready, StreamExt, TryStreamExt};
+use metrics::counter;
 use num_traits::FromPrimitive;
 use once_cell::sync::OnceCell;
 use parking_lot::RwLock;
@@ -146,6 +147,7 @@ impl Session {
         store_credentials: bool,
     ) -> Result<(), Error> {
         let (reusable_credentials, transport) = loop {
+            counter!("librespot.session.connect", 1);
             let ap = self.apresolver().resolve("accesspoint").await?;
             info!("Connecting to AP \"{}:{}\"", ap.0, ap.1);
             let mut transport =
@@ -203,7 +205,7 @@ impl Session {
             let result = future::try_join3(sender_task, receiver_task, timeout_task).await;
 
             if let Err(e) = result {
-                error!("connect task failed: {}", e);
+                error!("{}", e);
             }
         });
 
