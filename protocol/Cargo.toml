@@ -16,3 +16,7 @@ serde = { version = "1" }
 [build-dependencies]
 glob = "0.3"
 protobuf-codegen-pure = "2"
+
+[features]
+with-serde = []
+default = ["with-serde"]
