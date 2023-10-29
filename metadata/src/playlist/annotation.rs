@@ -14,7 +14,7 @@ use librespot_core::{Error, Session, SpotifyId};
 use librespot_protocol as protocol;
 pub use protocol::playlist_annotate3::AbuseReportState;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistAnnotation {
     pub description: String,
     pub picture: String,

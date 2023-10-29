@@ -12,7 +12,7 @@ pub use protocol::metadata::AudioFile_Format as AudioFileFormat;
 
 use crate::util::impl_deref_wrapped;
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct AudioFiles(pub HashMap<AudioFileFormat, FileId>);
 
 impl_deref_wrapped!(AudioFiles, HashMap<AudioFileFormat, FileId>);

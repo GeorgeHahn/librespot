@@ -25,12 +25,12 @@ use protobuf::Message;
 use librespot_protocol as protocol;
 use protocol::playlist4_external::GeoblockBlockingType as Geoblock;
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Geoblocks(Vec<Geoblock>);
 
 impl_deref_wrapped!(Geoblocks, Vec<Geoblock>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Playlist {
     pub id: NamedSpotifyId,
     pub revision: Vec<u8>,
@@ -49,12 +49,12 @@ pub struct Playlist {
     pub geoblocks: Geoblocks,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Playlists(pub Vec<SpotifyId>);
 
 impl_deref_wrapped!(Playlists, Vec<SpotifyId>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct SelectedListContent {
     pub revision: Vec<u8>,
     pub length: i32,

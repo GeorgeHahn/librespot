@@ -24,7 +24,7 @@ use librespot_protocol as protocol;
 pub use protocol::metadata::Album_Type as AlbumType;
 use protocol::metadata::Disc as DiscMessage;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Album {
     pub id: SpotifyId,
     pub name: String,
@@ -49,19 +49,19 @@ pub struct Album {
     pub availability: Availabilities,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Albums(pub Vec<SpotifyId>);
 
 impl_deref_wrapped!(Albums, Vec<SpotifyId>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Disc {
     pub number: i32,
     pub name: String,
     pub tracks: Tracks,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Discs(pub Vec<Disc>);
 
 impl_deref_wrapped!(Discs, Vec<Disc>);
