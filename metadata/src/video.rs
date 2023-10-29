@@ -10,7 +10,7 @@ use librespot_core::FileId;
 use librespot_protocol as protocol;
 use protocol::metadata::VideoFile as VideoFileMessage;
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct VideoFiles(pub Vec<FileId>);
 
 impl_deref_wrapped!(VideoFiles, Vec<FileId>);

@@ -14,7 +14,7 @@ pub use protocol::metadata::Image_Size as ImageSize;
 use protocol::playlist4_external::PictureSize as PictureSizeMessage;
 use protocol::playlist_annotate3::TranscodedPicture as TranscodedPictureMessage;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Image {
     pub id: FileId,
     pub size: ImageSize,
@@ -22,7 +22,7 @@ pub struct Image {
     pub height: i32,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Images(pub Vec<Image>);
 
 impl From<&ImageGroup> for Images {
@@ -33,23 +33,24 @@ impl From<&ImageGroup> for Images {
 
 impl_deref_wrapped!(Images, Vec<Image>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PictureSize {
     pub target_name: String,
     pub url: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct PictureSizes(pub Vec<PictureSize>);
 
 impl_deref_wrapped!(PictureSizes, Vec<PictureSize>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct TranscodedPicture {
     pub target_name: String,
     pub uri: SpotifyId,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct TranscodedPictures(pub Vec<TranscodedPicture>);
 
 impl_deref_wrapped!(TranscodedPictures, Vec<TranscodedPicture>);

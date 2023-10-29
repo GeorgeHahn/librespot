@@ -14,14 +14,14 @@ use librespot_core::date::Date;
 use librespot_protocol as protocol;
 use protocol::metadata::SalePeriod as SalePeriodMessage;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct SalePeriod {
     pub restrictions: Restrictions,
     pub start: Date,
     pub end: Date,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct SalePeriods(pub Vec<SalePeriod>);
 
 impl_deref_wrapped!(SalePeriods, Vec<SalePeriod>);

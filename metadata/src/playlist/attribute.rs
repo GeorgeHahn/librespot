@@ -58,7 +58,7 @@ pub struct PlaylistFormatAttribute(pub HashMap<String, String>);
 
 impl_deref_wrapped!(PlaylistFormatAttribute, HashMap<String, String>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistItemAttributes {
     pub added_by: String,
     pub timestamp: Date,
@@ -68,14 +68,14 @@ pub struct PlaylistItemAttributes {
     pub item_id: Vec<u8>,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistItemAttributeKinds(pub Vec<PlaylistItemAttributeKind>);
 
 impl_deref_wrapped!(PlaylistItemAttributeKinds, Vec<PlaylistItemAttributeKind>);
 
 impl_from_repeated_copy!(PlaylistItemAttributeKind, PlaylistItemAttributeKinds);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistPartialAttributes {
     #[allow(dead_code)]
     values: PlaylistAttributes,
@@ -83,7 +83,7 @@ pub struct PlaylistPartialAttributes {
     no_value: PlaylistAttributeKinds,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistPartialItemAttributes {
     #[allow(dead_code)]
     values: PlaylistItemAttributes,
@@ -91,13 +91,13 @@ pub struct PlaylistPartialItemAttributes {
     no_value: PlaylistItemAttributeKinds,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistUpdateAttributes {
     pub new_attributes: PlaylistPartialAttributes,
     pub old_attributes: PlaylistPartialAttributes,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistUpdateItemAttributes {
     pub index: i32,
     pub new_attributes: PlaylistPartialItemAttributes,

@@ -20,7 +20,9 @@ impl From<ComponentRange> for Error {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize, serde::Serialize,
+)]
 pub struct Date(pub OffsetDateTime);
 
 impl Deref for Date {

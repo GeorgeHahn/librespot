@@ -8,13 +8,13 @@ use crate::util::{impl_deref_wrapped, impl_from_repeated};
 use librespot_protocol as protocol;
 use protocol::metadata::ContentRating as ContentRatingMessage;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct ContentRating {
     pub country: String,
     pub tags: Vec<String>,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct ContentRatings(pub Vec<ContentRating>);
 
 impl_deref_wrapped!(ContentRatings, Vec<ContentRating>);

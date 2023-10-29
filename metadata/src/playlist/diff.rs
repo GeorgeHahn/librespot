@@ -10,7 +10,7 @@ use librespot_core::SpotifyId;
 use librespot_protocol as protocol;
 use protocol::playlist4_external::Diff as DiffMessage;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct PlaylistDiff {
     pub from_revision: SpotifyId,
     pub operations: PlaylistOperations,

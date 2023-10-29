@@ -15,18 +15,18 @@ use protocol::metadata::Availability as AvailabilityMessage;
 
 pub type AudioItemAvailability = Result<(), UnavailabilityReason>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Availability {
     pub catalogue_strs: Vec<String>,
     pub start: Date,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Availabilities(pub Vec<Availability>);
 
 impl_deref_wrapped!(Availabilities, Vec<Availability>);
 
-#[derive(Debug, Copy, Clone, Error)]
+#[derive(Debug, Copy, Clone, Error, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum UnavailabilityReason {
     #[error("blacklist present and country on it")]
     Blacklisted,

@@ -12,7 +12,7 @@ use librespot_protocol as protocol;
 pub use protocol::metadata::Restriction_Catalogue as RestrictionCatalogue;
 pub use protocol::metadata::Restriction_Type as RestrictionType;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Restriction {
     pub catalogues: RestrictionCatalogues,
     pub restriction_type: RestrictionType,
@@ -21,12 +21,12 @@ pub struct Restriction {
     pub countries_forbidden: Option<Vec<String>>,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, PartialEq, Default, serde::Deserialize, serde::Serialize)]
 pub struct Restrictions(pub Vec<Restriction>);
 
 impl_deref_wrapped!(Restrictions, Vec<Restriction>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct RestrictionCatalogues(pub Vec<RestrictionCatalogue>);
 
 impl_deref_wrapped!(RestrictionCatalogues, Vec<RestrictionCatalogue>);
