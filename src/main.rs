@@ -22,15 +22,15 @@ use librespot::{
         authentication::Credentials, cache::Cache, config::DeviceType, version, Session,
         SessionConfig,
     },
-    // playback::{
-    //     audio_backend::{self, SinkBuilder, BACKENDS},
-    //     config::{
-    //         AudioFormat, Bitrate, NormalisationMethod, NormalisationType, PlayerConfig, VolumeCtrl,
-    //     },
-    //     dither,
-    //     mixer::{self, MixerConfig, MixerFn},
-    //     player::{coefficient_to_duration, duration_to_coefficient, Player},
-    // },
+    playback::{
+        audio_backend::{self, SinkBuilder, BACKENDS},
+        config::{
+            AudioFormat, Bitrate, NormalisationMethod, NormalisationType, PlayerConfig, VolumeCtrl,
+        },
+        dither,
+        mixer::{self, MixerConfig, MixerFn},
+        player::{coefficient_to_duration, duration_to_coefficient, Player},
+    },
 };
 
 #[cfg(feature = "alsa-backend")]
